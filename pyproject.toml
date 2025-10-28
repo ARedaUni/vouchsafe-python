@@ -7,7 +7,7 @@ authors = [
 ]
 license = { text = "Terms of use" }
 readme = "README.md"
-keywords = ["OpenAPI", "OpenAPI-Generator", "Vouchsafe API docs"]
+keywords = ["vouchsafe", "identity", "verification", "sdk", "kyc", "api", "python"]
 requires-python = ">=3.9"
 
 dependencies = [
