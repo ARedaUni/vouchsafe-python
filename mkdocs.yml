@@ -1,0 +1,88 @@
+site_name: Vouchsafe API
+site_description: Python SDK and API reference for Vouchsafe
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+      primary: teal
+      accent: purple
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+      primary: teal
+      accent: lime
+
+nav:
+  - API:
+      - Authentication: AuthenticationApi.md
+      - Flows: FlowsApi.md
+      - Smart Lookups: SmartLookupsApi.md
+      - Team: TeamApi.md
+      - Verifications: VerificationsApi.md
+  - Models:
+      - ApiErrorResponse: ApiErrorResponse.md
+      - AuthenticateInput: AuthenticateInput.md
+      - AuthenticateResponse: AuthenticateResponse.md
+      - CheckResult: CheckResult.md
+      - CheckState: CheckState.md
+      - CreateTeamInput: CreateTeamInput.md
+      - CreateTeamResponse: CreateTeamResponse.md
+      - CreateTeamResponseCredentials: CreateTeamResponseCredentials.md
+      - Flow: Flow.md
+      - FlowTemplate: FlowTemplate.md
+      - GetSmartLookupResponse: GetSmartLookupResponse.md
+      - Model36EnumsBackgroundCheck: Model36EnumsBackgroundCheck.md
+      - Model36EnumsEnvironment: Model36EnumsEnvironment.md
+      - PostcodeResponse: PostcodeResponse.md
+      - Reason: Reason.md
+      - RecordAddressVerificationChecksCheckResult: RecordAddressVerificationChecksCheckResult.md
+      - Report: Report.md
+      - RequestVerificationInput: RequestVerificationInput.md
+      - RequestVerificationResponse: RequestVerificationResponse.md
+      - SmartLookupInput: SmartLookupInput.md
+      - Status: Status.md
+      - Team: Team.md
+      - Verification: Verification.md
+
+docs_dir: docs
+
+plugins:
+  - social
+  - search
+  - mkdocstrings
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.mark
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra_javascript:
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
