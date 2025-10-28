@@ -20,8 +20,10 @@ dependencies = [
 [project.urls]
 Repository = "https://github.com/GIT_USER_ID/GIT_REPO_ID"
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.hatch.build.targets.wheel]
+packages = ["src/vouchsafe_python"]
+
+
 
 [tool.poetry]
 requires-poetry = ">=2.0"
@@ -36,8 +38,8 @@ mypy = ">= 1.5"
 
 
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
 
 [tool.pylint.'MESSAGES CONTROL']
 extension-pkg-whitelist = "pydantic"
