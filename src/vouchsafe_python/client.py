@@ -1,20 +1,20 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
+from .api.authentication_api import AuthenticationApi
 from .api import (
-    AuthenticationApi,
     VerificationsApi,
     SmartLookupsApi,
-    FlowsApi,
-    AuthenticateInput,
-    Configuration,
-    ApiClient,
-    ApiException
+    FlowsApi
 )
+from .api_client import ApiClient
+from .configuration import Configuration
+from .exceptions import ApiException
 from .models import (
     RequestVerificationInput,
     SmartLookupInput,
-    Status
+    Status,
+    AuthenticateInput
 )
 
 
