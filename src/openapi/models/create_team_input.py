@@ -20,7 +20,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from vouchsafe_python.models.flow_template import FlowTemplate
+from openapi.models.flow_template import FlowTemplate
 from typing import Optional, Set
 from typing_extensions import Self
 

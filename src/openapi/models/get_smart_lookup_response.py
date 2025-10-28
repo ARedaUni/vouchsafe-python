@@ -20,8 +20,8 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from vouchsafe_python.models.model36_enums_background_check import Model36EnumsBackgroundCheck
-from vouchsafe_python.models.report import Report
+from openapi.models.model36_enums_background_check import Model36EnumsBackgroundCheck
+from openapi.models.report import Report
 from typing import Optional, Set
 from typing_extensions import Self
 

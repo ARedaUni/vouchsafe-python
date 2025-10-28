@@ -20,11 +20,11 @@ from typing_extensions import Annotated
 from pydantic import Field, StrictStr
 from typing import List
 from typing_extensions import Annotated
-from vouchsafe_python.models.flow import Flow
+from openapi.models.flow import Flow
 
-from vouchsafe_python.api_client import ApiClient, RequestSerialized
-from vouchsafe_python.api_response import ApiResponse
-from vouchsafe_python.rest import RESTResponseType
+from openapi.api_client import ApiClient, RequestSerialized
+from openapi.api_response import ApiResponse
+from openapi.rest import RESTResponseType
 
 
 class FlowsApi:

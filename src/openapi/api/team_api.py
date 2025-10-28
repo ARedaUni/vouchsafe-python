@@ -18,13 +18,13 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
 from pydantic import StrictStr
-from vouchsafe_python.models.create_team_input import CreateTeamInput
-from vouchsafe_python.models.create_team_response import CreateTeamResponse
-from vouchsafe_python.models.team import Team
+from openapi.models.create_team_input import CreateTeamInput
+from openapi.models.create_team_response import CreateTeamResponse
+from openapi.models.team import Team
 
-from vouchsafe_python.api_client import ApiClient, RequestSerialized
-from vouchsafe_python.api_response import ApiResponse
-from vouchsafe_python.rest import RESTResponseType
+from openapi.api_client import ApiClient, RequestSerialized
+from openapi.api_response import ApiResponse
+from openapi.rest import RESTResponseType
 
 
 class TeamApi:

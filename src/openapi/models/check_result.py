@@ -20,8 +20,8 @@ import json
 
 from pydantic import BaseModel, ConfigDict
 from typing import Any, ClassVar, Dict, List, Optional
-from vouchsafe_python.models.check_state import CheckState
-from vouchsafe_python.models.reason import Reason
+from openapi.models.check_state import CheckState
+from openapi.models.reason import Reason
 from typing import Optional, Set
 from typing_extensions import Self
 

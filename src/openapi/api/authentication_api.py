@@ -17,12 +17,12 @@ from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
 
-from vouchsafe_python.models.authenticate_input import AuthenticateInput
-from vouchsafe_python.models.authenticate_response import AuthenticateResponse
+from openapi.models.authenticate_input import AuthenticateInput
+from openapi.models.authenticate_response import AuthenticateResponse
 
-from vouchsafe_python.api_client import ApiClient, RequestSerialized
-from vouchsafe_python.api_response import ApiResponse
-from vouchsafe_python.rest import RESTResponseType
+from openapi.api_client import ApiClient, RequestSerialized
+from openapi.api_response import ApiResponse
+from openapi.rest import RESTResponseType
 
 
 class AuthenticationApi:

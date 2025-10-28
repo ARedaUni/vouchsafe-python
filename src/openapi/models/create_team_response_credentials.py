@@ -20,7 +20,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List
-from vouchsafe_python.models.model36_enums_environment import Model36EnumsEnvironment
+from openapi.models.model36_enums_environment import Model36EnumsEnvironment
 from typing import Optional, Set
 from typing_extensions import Self
 

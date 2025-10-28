@@ -1,0 +1,104 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-publish:
+    name: Build and publish to PyPI
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'Vouchsafe'
+    permissions:
+      id-token: write
+      contents: write
+
+    environment:
+      name: pypi
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 1  
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Update version in pyproject.toml
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          echo "Setting version to $TAG_VERSION in pyproject.toml"
+          sed -i "s/version = \".*\"/version = \"$TAG_VERSION\"/" pyproject.toml
+          
+      - name: Update version in setup.py
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          echo "Setting version to $TAG_VERSION in setup.py"
+          sed -i "s/VERSION = \".*\"/VERSION = \"$TAG_VERSION\"/" setup.py
+
+      - name: Update version in src/openapi/__init__.py
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          echo "Setting version to $TAG_VERSION in src/openapi/__init__.py"
+          sed -i "s/__version__ = \".*\"/__version__ = \"$TAG_VERSION\"/" src/openapi/__init__.py
+
+      - name: Install pypa/build
+        run: >-
+          python3 -m
+          pip install
+          build
+          --user
+
+      - name: Build a binary wheel and a source tarball
+        run: python3 -m build
+
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+    
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Publish release distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+
+      - name: Create test environment
+        run: python -m venv test_before_pypi
+
+      - name: Check the install
+        run: |
+            source test_before_pypi/bin/activate
+            pip install dist/*.whl
+            python -c "from vouchsafe_python import __version__; print(__version__)"
+            deactivate
+            rm -r test_before_pypi
+
+  create-release:
+    name: Create Release
+    needs: build-and-publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false

@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime, timedelta
 from typing import Optional, Union
 
-from vouchsafe_python import (
+from openapi import (
     AuthenticationApi,
     VerificationsApi,
     SmartLookupsApi,
@@ -12,7 +12,7 @@ from vouchsafe_python import (
     ApiClient,
     ApiException
 )
-from vouchsafe_python.models import (
+from openapi.models import (
     RequestVerificationInput,
     SmartLookupInput,
     Status

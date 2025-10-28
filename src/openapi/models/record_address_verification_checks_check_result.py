@@ -20,7 +20,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, ClassVar, Dict, List
-from vouchsafe_python.models.check_result import CheckResult
+from openapi.models.check_result import CheckResult
 from typing import Optional, Set
 from typing_extensions import Self
 

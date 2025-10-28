@@ -20,7 +20,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
-from vouchsafe_python.models.create_team_response_credentials import CreateTeamResponseCredentials
+from openapi.models.create_team_response_credentials import CreateTeamResponseCredentials
 from typing import Optional, Set
 from typing_extensions import Self
 

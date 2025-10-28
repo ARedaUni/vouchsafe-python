@@ -20,8 +20,8 @@ import json
 
 from pydantic import BaseModel, ConfigDict
 from typing import Any, ClassVar, Dict, List
-from vouchsafe_python.models.check_state import CheckState
-from vouchsafe_python.models.record_address_verification_checks_check_result import RecordAddressVerificationChecksCheckResult
+from openapi.models.check_state import CheckState
+from openapi.models.record_address_verification_checks_check_result import RecordAddressVerificationChecksCheckResult
 from typing import Optional, Set
 from typing_extensions import Self
 
