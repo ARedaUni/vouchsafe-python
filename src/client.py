@@ -1,6 +1,5 @@
-import asyncio
 from datetime import datetime, timedelta
-from typing import Optional, Union
+from typing import Optional
 
 from .openapi import (
     AuthenticationApi,
@@ -46,7 +45,6 @@ class VouchsafeClient:
         """
         self.client_id = client_id
         self.client_secret = client_secret
-        self.base_url = base_url
         
         # Token management
         self.token: Optional[str] = None
@@ -62,40 +60,39 @@ class VouchsafeClient:
         self.smart_lookups_api = SmartLookupsApi(self.api_client) 
         self.flows_api = FlowsApi(self.api_client)
     
-    def _should_refresh_token(self) -> bool:
-        """Check if the current token should be refreshed."""
-        if not self.token or not self.token_expiry:
-            return True
-        
-        # Refresh if within 5 minutes of expiry
-        buffer_time = timedelta(minutes=5)
-        return datetime.now() >= (self.token_expiry - buffer_time)
-    
-    async def _get_access_token(self) -> str:
+    def _get_access_token(self) -> str:
         """Get a valid access token, refreshing if needed."""
-        if self._should_refresh_token():
-            try:
-                auth_input = AuthenticateInput(
-                    client_id=self.client_id,
-                    client_secret=self.client_secret
-                )
-                
-                response = self.authentication_api.authenticate(authenticate_input=auth_input)
-                
-                self.token = response.access_token
-                self.token_expiry = datetime.fromisoformat(response.expires_at.replace('Z', '+00:00'))
-                
-                self.config.access_token = self.token
-            except ApiException as e:
-                raise VouchsafeApiError(
-                    status_code=e.status,
-                    response_body=e.body,
-                    message=f"Failed to authenticate: {e.reason}"
-                )
+        # Check if token is still valid (with 5-minute buffer)
+        if self.token and self.token_expiry:
+            buffer_time = timedelta(minutes=5)
+            if datetime.now() < (self.token_expiry - buffer_time):
+                return self.token
+        
+        # Need to refresh token
+        try:
+            auth_input = AuthenticateInput(
+                client_id=self.client_id,
+                client_secret=self.client_secret
+            )
+            
+            response = self.authentication_api.authenticate(authenticate_input=auth_input)
+            
+            self.token = response.access_token
+            self.token_expiry = datetime.fromisoformat(response.expires_at.replace('Z', '+00:00'))
+            
+            # Set token in API client's default headers
+            self.api_client.default_headers['Authorization'] = f'Bearer {self.token}'
+            
+        except ApiException as e:
+            raise VouchsafeApiError(
+                status_code=e.status,
+                response_body=e.body if e.body else {},
+                message=f"Failed to authenticate: {e.reason}"
+            )
         
         return self.token
     
-    async def _with_error_handling(self, api_call):
+    def _with_error_handling(self, api_call):
         """Wrapper to handle API errors and re-authenticate on 401."""
         try:
             return api_call()
@@ -104,95 +101,88 @@ class VouchsafeClient:
                 # Force a token refresh and retry once
                 self.token = None
                 self.token_expiry = None
-                await self._get_access_token()
+                self._get_access_token()
                 
                 # Retry the original call
                 return api_call()
-            elif e.body:
+            
+            # Handle other errors
+            if e.body:
                 try:
                     import json
-                    body = json.loads(e.body)
+                    body = json.loads(e.body) if isinstance(e.body, str) else e.body
                     message = body.get('message', e.reason)
                 except (json.JSONDecodeError, TypeError):
                     body = {}
                     message = e.reason
-                raise VouchsafeApiError(
-                    status_code=e.status,
-                    response_body=body,
-                    message=message
-                )
             else:
-                raise VouchsafeApiError(
-                    status_code=e.status,
-                    response_body={},
-                    message=e.reason
-                )
+                body = {}
+                message = e.reason
+                
+            raise VouchsafeApiError(
+                status_code=e.status,
+                response_body=body,
+                message=message
+            )
     
     # Public methods for verifications
     
-    async def get_verification(self, verification_id: str):
+    def get_verification(self, verification_id: str):
         """Get a single verification by ID."""
-        await self._get_access_token()
+        self._get_access_token()
         
-        def api_call():
-            return self.verifications_api.get_verification(id=verification_id)
-        
-        return await self._with_error_handling(api_call)
+        return self._with_error_handling(
+            lambda: self.verifications_api.get_verification(id=verification_id)
+        )
     
-    async def list_verifications(self, status: Optional[Status] = None):
+    def list_verifications(self, status: Optional[Status] = None):
         """List all verifications for your team."""
-        await self._get_access_token()
+        self._get_access_token()
         
-        def api_call():
-            return self.verifications_api.list_verifications(status=status)
-        
-        return await self._with_error_handling(api_call)
+        return self._with_error_handling(
+            lambda: self.verifications_api.list_verifications(status=status)
+        )
     
-    async def request_verification(self, input_data: RequestVerificationInput):
+    def request_verification(self, input_data: RequestVerificationInput):
         """Request a new verification."""
-        await self._get_access_token()
+        self._get_access_token()
         
-        def api_call():
-            return self.verifications_api.request_verification(request_verification_input=input_data)
-        
-        return await self._with_error_handling(api_call)
+        return self._with_error_handling(
+            lambda: self.verifications_api.request_verification(request_verification_input=input_data)
+        )
     
     # Public methods for smart lookups
     
-    async def perform_smart_lookup(self, input_data: SmartLookupInput):
+    def perform_smart_lookup(self, input_data: SmartLookupInput):
         """Perform a smart lookup."""
-        await self._get_access_token()
+        self._get_access_token()
         
-        def api_call():
-            return self.smart_lookups_api.perform_smart_lookup(smart_lookup_input=input_data)
-        
-        return await self._with_error_handling(api_call)
+        return self._with_error_handling(
+            lambda: self.smart_lookups_api.perform_smart_lookup(smart_lookup_input=input_data)
+        )
     
-    async def search_postcode(self, postcode: str):
+    def search_postcode(self, postcode: str):
         """Search for addresses by postcode."""
-        await self._get_access_token()
+        self._get_access_token()
         
-        def api_call():
-            return self.smart_lookups_api.search_postcode(postcode=postcode)
-        
-        return await self._with_error_handling(api_call)
+        return self._with_error_handling(
+            lambda: self.smart_lookups_api.search_postcode(postcode=postcode)
+        )
     
     # Public methods for flows
     
-    async def list_flows(self):
+    def list_flows(self):
         """Get a list of all currently published verification flows."""
-        await self._get_access_token()
+        self._get_access_token()
         
-        def api_call():
-            return self.flows_api.list_flows()
-        
-        return await self._with_error_handling(api_call)
+        return self._with_error_handling(
+            lambda: self.flows_api.list_flows()
+        )
     
-    async def get_flow(self, flow_id: str):
+    def get_flow(self, flow_id: str):
         """Get a specific verification flow."""
-        await self._get_access_token()
+        self._get_access_token()
         
-        def api_call():
-            return self.flows_api.get_flow(id=flow_id)
-        
-        return await self._with_error_handling(api_call)
+        return self._with_error_handling(
+            lambda: self.flows_api.get_flow(id=flow_id)
+        )
