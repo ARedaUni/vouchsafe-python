@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from .openapi import (
+from .api import (
     AuthenticationApi,
     VerificationsApi,
     SmartLookupsApi,
@@ -11,7 +11,7 @@ from .openapi import (
     ApiClient,
     ApiException
 )
-from .openapi.models import (
+from .models import (
     RequestVerificationInput,
     SmartLookupInput,
     Status

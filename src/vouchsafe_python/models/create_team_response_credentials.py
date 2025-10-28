@@ -19,21 +19,20 @@ import re  # noqa: F401
 import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing import Any, ClassVar, Dict, List, Optional
-from openapi.models.flow_template import FlowTemplate
+from typing import Any, ClassVar, Dict, List
+from vouchsafe_python.models.model36_enums_environment import Model36EnumsEnvironment
 from typing import Optional, Set
 from typing_extensions import Self
 
-class CreateTeamInput(BaseModel):
+class CreateTeamResponseCredentials(BaseModel):
     """
-    Input for creating a new team
+    Production API credentials for this team
     """ # noqa: E501
-    name: StrictStr = Field(description="The name of the team.")
-    public_name: Optional[StrictStr] = Field(default=None, description="The public name of the team, shown in end-user facing screens and communications. If set, overrides the name.")
-    logo_url: Optional[StrictStr] = Field(default=None, description="Path to the team's logo image.")
-    team_admin_emails: List[StrictStr] = Field(description="Email addresses of users to add as team administrators.")
-    flow_template: Optional[FlowTemplate] = None
-    __properties: ClassVar[List[str]] = ["name", "public_name", "logo_url", "team_admin_emails", "flow_template"]
+    client_secret: StrictStr = Field(description="Client secret for API authentication")
+    client_id: StrictStr = Field(description="Client ID for API authentication")
+    environment: Model36EnumsEnvironment
+    name: StrictStr = Field(description="Name of the API key")
+    __properties: ClassVar[List[str]] = ["client_secret", "client_id", "environment", "name"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -53,7 +52,7 @@ class CreateTeamInput(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of CreateTeamInput from a JSON string"""
+        """Create an instance of CreateTeamResponseCredentials from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -78,7 +77,7 @@ class CreateTeamInput(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of CreateTeamInput from a dict"""
+        """Create an instance of CreateTeamResponseCredentials from a dict"""
         if obj is None:
             return None
 
@@ -86,11 +85,10 @@ class CreateTeamInput(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "name": obj.get("name"),
-            "public_name": obj.get("public_name"),
-            "logo_url": obj.get("logo_url"),
-            "team_admin_emails": obj.get("team_admin_emails"),
-            "flow_template": obj.get("flow_template")
+            "client_secret": obj.get("client_secret"),
+            "client_id": obj.get("client_id"),
+            "environment": obj.get("environment"),
+            "name": obj.get("name")
         })
         return _obj
 

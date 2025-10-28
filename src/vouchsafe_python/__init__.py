@@ -3,7 +3,8 @@ from .client import VouchsafeClient, VouchsafeApiError
 
 # Import models from the API package to make them available at the package level
 # Re-export openapi package items for convenience
-from .openapi import *
+from .api import *
+from .models import *
 
 __all__ = [
     "VouchsafeClient",

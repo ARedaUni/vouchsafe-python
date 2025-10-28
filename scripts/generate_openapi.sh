@@ -14,5 +14,5 @@ docker run --rm -v "$REPO_ROOT":/local openapitools/openapi-generator-cli genera
   -o /local/src \
   --skip-validate-spec \
   --skip-overwrite \
-  --global-property apis,models,modelDocs=false,apiDocs=false,apiTests=false,modelTests=false,supportingFiles=false \
-  --additional-properties=packageName=openapi,projectName=openapi,generateSourceCodeOnly=true
+  --global-property apis,models,modelDocs=false,apiDocs=false,apiTests=false,modelTests=false \
+  --additional-properties=packageName=vouchsafe_python,projectName=vouchsafe_python

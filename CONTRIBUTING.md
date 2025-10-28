@@ -1,9 +1,8 @@
-
 # Contributing
 
 We welcome bug reports, feature requests, and code contributions in a pull request.
 
-For most pull requests, we request that you identify or create an associated issue that has the necessary context. We use these issues to reach agreement on an approach and save the PR author from having to redo work. Fixing typos or documentation issues likely do not need an issue; for any issue that introduces substantial code changes, changes the public interface, or if you aren't sure, please find or [create an issue](https://www.github.com/vouchsafe/vouchsafe-node).
+For most pull requests, we request that you identify or create an associated issue that has the necessary context. We use these issues to reach agreement on an approach and save the PR author from having to redo work. Fixing typos or documentation issues likely do not need an issue; for any issue that introduces substantial code changes, changes the public interface, or if you aren't sure, please find or [create an issue](https://www.github.com/ARedaUni/vouchsafe-python).
 
 ## Generated code
 

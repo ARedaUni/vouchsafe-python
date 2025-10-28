@@ -19,19 +19,19 @@ import re  # noqa: F401
 import json
 
 from pydantic import BaseModel, ConfigDict
-from typing import Any, ClassVar, Dict, List, Optional
-from openapi.models.check_state import CheckState
-from openapi.models.reason import Reason
+from typing import Any, ClassVar, Dict, List
+from vouchsafe_python.models.check_state import CheckState
+from vouchsafe_python.models.record_address_verification_checks_check_result import RecordAddressVerificationChecksCheckResult
 from typing import Optional, Set
 from typing_extensions import Self
 
-class CheckResult(BaseModel):
+class Report(BaseModel):
     """
-    CheckResult
+    Report
     """ # noqa: E501
     state: CheckState
-    reason: Optional[Reason] = None
-    __properties: ClassVar[List[str]] = ["state", "reason"]
+    checks: RecordAddressVerificationChecksCheckResult
+    __properties: ClassVar[List[str]] = ["state", "checks"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -51,7 +51,7 @@ class CheckResult(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of CheckResult from a JSON string"""
+        """Create an instance of Report from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -72,11 +72,14 @@ class CheckResult(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of checks
+        if self.checks:
+            _dict['checks'] = self.checks.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of CheckResult from a dict"""
+        """Create an instance of Report from a dict"""
         if obj is None:
             return None
 
@@ -85,7 +88,7 @@ class CheckResult(BaseModel):
 
         _obj = cls.model_validate({
             "state": obj.get("state"),
-            "reason": obj.get("reason")
+            "checks": RecordAddressVerificationChecksCheckResult.from_dict(obj["checks"]) if obj.get("checks") is not None else None
         })
         return _obj
 

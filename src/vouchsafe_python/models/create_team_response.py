@@ -19,20 +19,21 @@ import re  # noqa: F401
 import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing import Any, ClassVar, Dict, List
-from openapi.models.model36_enums_environment import Model36EnumsEnvironment
+from typing import Any, ClassVar, Dict, List, Optional
+from vouchsafe_python.models.create_team_response_credentials import CreateTeamResponseCredentials
 from typing import Optional, Set
 from typing_extensions import Self
 
-class CreateTeamResponseCredentials(BaseModel):
+class CreateTeamResponse(BaseModel):
     """
-    Production API credentials for this team
+    Response from creating a new team
     """ # noqa: E501
-    client_secret: StrictStr = Field(description="Client secret for API authentication")
-    client_id: StrictStr = Field(description="Client ID for API authentication")
-    environment: Model36EnumsEnvironment
-    name: StrictStr = Field(description="Name of the API key")
-    __properties: ClassVar[List[str]] = ["client_secret", "client_id", "environment", "name"]
+    id: StrictStr = Field(description="Unique identifier for the created team")
+    name: StrictStr = Field(description="The name of the team.")
+    public_name: Optional[StrictStr] = Field(default=None, description="The public name of the team, shown in end-user facing screens and communications. If set, overrides the name.")
+    created_at: StrictStr = Field(description="ISO 8601 timestamp of team creation")
+    credentials: CreateTeamResponseCredentials
+    __properties: ClassVar[List[str]] = ["id", "name", "public_name", "created_at", "credentials"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -52,7 +53,7 @@ class CreateTeamResponseCredentials(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of CreateTeamResponseCredentials from a JSON string"""
+        """Create an instance of CreateTeamResponse from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -73,11 +74,14 @@ class CreateTeamResponseCredentials(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of credentials
+        if self.credentials:
+            _dict['credentials'] = self.credentials.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of CreateTeamResponseCredentials from a dict"""
+        """Create an instance of CreateTeamResponse from a dict"""
         if obj is None:
             return None
 
@@ -85,10 +89,11 @@ class CreateTeamResponseCredentials(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "client_secret": obj.get("client_secret"),
-            "client_id": obj.get("client_id"),
-            "environment": obj.get("environment"),
-            "name": obj.get("name")
+            "id": obj.get("id"),
+            "name": obj.get("name"),
+            "public_name": obj.get("public_name"),
+            "created_at": obj.get("created_at"),
+            "credentials": CreateTeamResponseCredentials.from_dict(obj["credentials"]) if obj.get("credentials") is not None else None
         })
         return _obj
 

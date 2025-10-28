@@ -18,20 +18,20 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Any, ClassVar, Dict, List
-from openapi.models.check_state import CheckState
-from openapi.models.record_address_verification_checks_check_result import RecordAddressVerificationChecksCheckResult
+from vouchsafe_python.models.check_result import CheckResult
 from typing import Optional, Set
 from typing_extensions import Self
 
-class Report(BaseModel):
+class RecordAddressVerificationChecksCheckResult(BaseModel):
     """
-    Report
+    Construct a type with a set of properties K of type T
     """ # noqa: E501
-    state: CheckState
-    checks: RecordAddressVerificationChecksCheckResult
-    __properties: ClassVar[List[str]] = ["state", "checks"]
+    postcode_exists: CheckResult = Field(alias="POSTCODE_EXISTS")
+    address_exists: CheckResult = Field(alias="ADDRESS_EXISTS")
+    person_lives_at_address: CheckResult = Field(alias="PERSON_LIVES_AT_ADDRESS")
+    __properties: ClassVar[List[str]] = ["POSTCODE_EXISTS", "ADDRESS_EXISTS", "PERSON_LIVES_AT_ADDRESS"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -51,7 +51,7 @@ class Report(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of Report from a JSON string"""
+        """Create an instance of RecordAddressVerificationChecksCheckResult from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -72,14 +72,20 @@ class Report(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of checks
-        if self.checks:
-            _dict['checks'] = self.checks.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of postcode_exists
+        if self.postcode_exists:
+            _dict['POSTCODE_EXISTS'] = self.postcode_exists.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of address_exists
+        if self.address_exists:
+            _dict['ADDRESS_EXISTS'] = self.address_exists.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of person_lives_at_address
+        if self.person_lives_at_address:
+            _dict['PERSON_LIVES_AT_ADDRESS'] = self.person_lives_at_address.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of Report from a dict"""
+        """Create an instance of RecordAddressVerificationChecksCheckResult from a dict"""
         if obj is None:
             return None
 
@@ -87,8 +93,9 @@ class Report(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "state": obj.get("state"),
-            "checks": RecordAddressVerificationChecksCheckResult.from_dict(obj["checks"]) if obj.get("checks") is not None else None
+            "POSTCODE_EXISTS": CheckResult.from_dict(obj["POSTCODE_EXISTS"]) if obj.get("POSTCODE_EXISTS") is not None else None,
+            "ADDRESS_EXISTS": CheckResult.from_dict(obj["ADDRESS_EXISTS"]) if obj.get("ADDRESS_EXISTS") is not None else None,
+            "PERSON_LIVES_AT_ADDRESS": CheckResult.from_dict(obj["PERSON_LIVES_AT_ADDRESS"]) if obj.get("PERSON_LIVES_AT_ADDRESS") is not None else None
         })
         return _obj
 
