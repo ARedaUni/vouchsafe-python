@@ -20,6 +20,9 @@ dependencies = [
 [project.urls]
 Repository = "https://github.com/GIT_USER_ID/GIT_REPO_ID"
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.poetry]
 requires-poetry = ">=2.0"
 

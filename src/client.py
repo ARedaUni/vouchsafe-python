@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime, timedelta
 from typing import Optional, Union
 
-from openapi import (
+from .openapi import (
     AuthenticationApi,
     VerificationsApi,
     SmartLookupsApi,
@@ -12,7 +12,7 @@ from openapi import (
     ApiClient,
     ApiException
 )
-from openapi.models import (
+from .openapi.models import (
     RequestVerificationInput,
     SmartLookupInput,
     Status
