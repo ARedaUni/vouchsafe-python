@@ -35,11 +35,11 @@ jobs:
           echo "Setting version to $TAG_VERSION in pyproject.toml"
           sed -i "s/version = \".*\"/version = \"$TAG_VERSION\"/" pyproject.toml
 
-      - name: Update version in src/vouchsafe_python/openapi/__init__.py
+      - name: Update version in src/vouchsafe_python/__init__.py
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"
-          echo "Setting version to $TAG_VERSION in src/vouchsafe_python/openapi/__init__.py"
-          sed -i "s/__version__ = \".*\"/__version__ = \"$TAG_VERSION\"/" src/vouchsafe_python/openapi/__init__.py
+          echo "Setting version to $TAG_VERSION in src/vouchsafe_python/__init__.py"
+          sed -i "s/__version__ = \".*\"/__version__ = \"$TAG_VERSION\"/" src/vouchsafe_python/__init__.py
 
       - name: Install pypa/build
         run: >-
