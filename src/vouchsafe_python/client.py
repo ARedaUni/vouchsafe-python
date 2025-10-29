@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from .api.authentication_api import AuthenticationApi
 from .api import (
+    AuthenticationApi,
     VerificationsApi,
     SmartLookupsApi,
     FlowsApi
